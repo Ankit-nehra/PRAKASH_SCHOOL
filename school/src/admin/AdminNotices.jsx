@@ -180,7 +180,7 @@ function AdminNotices() {
                     <td className="p-4">
                       {n.image ? (
                         <img
-                          src={`http://localhost:5000/uploads/${n.image}`}
+                          src={`https://prakash-school-server-ru7x.onrender.com/uploads/${n.image}`}
                           alt="notice"
                           className="h-16 w-16 object-cover rounded"
                         />
@@ -191,7 +191,7 @@ function AdminNotices() {
                     <td className="p-4">
                       {n.attachment ? (
                         <a
-                          href={`http://localhost:5000/uploads/${n.attachment}`}
+                          href={`https://prakash-school-server-ru7x.onrender.com/uploads/${n.attachment}`}
                           target="_blank"
                           className="text-blue-700 underline"
                         >
