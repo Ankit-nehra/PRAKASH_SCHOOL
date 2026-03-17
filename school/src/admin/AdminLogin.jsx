@@ -13,7 +13,7 @@ function AdminLogin() {
     setError("");
 
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/login", {
+      const { data } = await axios.post("https://prakash-school-server-ru7x.onrender.com/api/auth/login", {
         username,
         password,
       });
