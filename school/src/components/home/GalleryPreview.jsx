@@ -42,7 +42,7 @@ function GalleryPreview() {
               <div className="group relative overflow-hidden rounded-xl shadow-lg cursor-pointer">
 
                 <img
-                  src={`https://prakash-school-server-ru7x.onrender.com/${img.image}`}
+                  src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
                   alt={img.category}
                   loading="lazy"
                   className="w-full h-52 object-cover transition duration-500 group-hover:scale-110"
