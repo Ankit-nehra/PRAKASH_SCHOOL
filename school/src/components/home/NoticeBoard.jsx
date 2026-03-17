@@ -7,7 +7,7 @@ function NoticeBoard() {
   useEffect(() => {
     async function fetchNotices() {
       try {
-        const res = await axios.get("http://localhost:5000/api/notices");
+        const res = await axios.get("https://prakash-school-server-ru7x.onrender.com/api/notices");
         setNotices(res.data);
       } catch (err) {
         console.error(err);
@@ -32,7 +32,7 @@ function NoticeBoard() {
               {/* Optional Image */}
               {notice.image && (
                 <img
-                  src={`http://localhost:5000/uploads/${notice.image}`}
+                  src={`https://prakash-school-server-ru7x.onrender.com/uploads/${notice.image}`}
                   alt={notice.title}
                   className="w-full h-48 object-cover rounded mb-4"
                 />
@@ -59,7 +59,7 @@ function NoticeBoard() {
               {/* Optional File Attachment */}
               {notice.attachment && (
                 <a
-                  href={`http://localhost:5000/uploads/${notice.attachment}`}
+                  href={`https://prakash-school-server-ru7x.onrender.com/uploads/${notice.attachment}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-900 text-sm underline"
