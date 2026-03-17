@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "../utils/axiosInstance";
 import Navbar from "../components/layout/Navbar";
+import imageCompression from "browser-image-compression";
 
 function AdminGallery() {
   const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [category, setCategory] = useState("");
   const [images, setImages] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     fetchImages();
@@ -20,21 +23,77 @@ function AdminGallery() {
     }
   };
 
+  // 📸 Handle image select + preview + compression
+  const handleImageChange = async (file) => {
+    if (!file) return;
+
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/gif",
+      "image/webp"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      return alert("Only JPG, PNG, GIF, WEBP allowed");
+    }
+
+    try {
+      // Compress image
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1280,
+        useWebWorker: true,
+      };
+
+      const compressedFile = await imageCompression(file, options);
+
+      setImage(compressedFile);
+
+      // Preview
+      const previewUrl = URL.createObjectURL(compressedFile);
+      setPreview(previewUrl);
+
+    } catch (error) {
+      console.error(error);
+      alert("Image processing failed");
+    }
+  };
+
+  // 🚀 Upload image with progress
   const uploadImage = async () => {
-    if (!image || !category) return alert("Select image and category");
+    if (!image || !category) {
+      return alert("Select image and category");
+    }
 
     const formData = new FormData();
     formData.append("image", image);
     formData.append("category", category);
 
     try {
-      await axios.post("/gallery", formData);
+      setUploadProgress(0);
+
+      await axios.post("/gallery", formData, {
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percent);
+        },
+      });
+
+      // Reset
       setImage(null);
+      setPreview(null);
       setCategory("");
+      setUploadProgress(0);
+
       fetchImages();
     } catch (err) {
       console.error(err);
-      alert("Upload failed");
+      alert(err.response?.data?.message || "Upload failed");
+      setUploadProgress(0);
     }
   };
 
@@ -56,7 +115,6 @@ function AdminGallery() {
 
       <div className="pt-24 max-w-6xl mx-auto px-6">
 
-        {/* Page Title */}
         <h1 className="text-3xl font-bold text-blue-900 mb-8">
           Gallery Management
         </h1>
@@ -69,8 +127,9 @@ function AdminGallery() {
 
             <input
               type="file"
+              accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
               className="border p-2 rounded w-full"
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={(e) => handleImageChange(e.target.files[0])}
             />
 
             <select
@@ -91,13 +150,36 @@ function AdminGallery() {
             >
               Upload Image
             </button>
-
           </div>
+
+          {/* 🖼️ Preview */}
+          {preview && (
+            <div className="mt-4">
+              <p className="text-sm mb-2">Preview:</p>
+              <img
+                src={preview}
+                alt="preview"
+                className="h-40 rounded-lg border"
+              />
+            </div>
+          )}
+
+          {/* 📊 Progress Bar */}
+          {uploadProgress > 0 && (
+            <div className="mt-4">
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div
+                  className="bg-blue-600 h-3 rounded-full transition-all"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+              <p className="text-sm mt-1">{uploadProgress}% uploaded</p>
+            </div>
+          )}
         </div>
 
-        {/* Gallery Grid */}
+        {/* Gallery */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
           {images.map((img) => (
             <div
               key={img._id}
@@ -106,11 +188,10 @@ function AdminGallery() {
               <img
                 src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
                 alt={img.category}
-                className="h-40 w-full object-cover hover:scale-105 transition"
+                className="h-40 w-full object-cover"
               />
 
               <div className="p-3">
-
                 <p className="text-sm text-gray-600 mb-2">
                   Category: <span className="font-medium">{img.category}</span>
                 </p>
@@ -121,11 +202,9 @@ function AdminGallery() {
                 >
                   Delete
                 </button>
-
               </div>
             </div>
           ))}
-
         </div>
 
       </div>
