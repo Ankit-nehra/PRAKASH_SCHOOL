@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "../utils/axiosInstance";
 import Navbar from "../components/layout/Navbar";
-import imageCompression from "browser-image-compression";
+// ❌ Removed imageCompression import
 
 function AdminGallery() {
   const [image, setImage] = useState(null);
@@ -23,8 +23,8 @@ function AdminGallery() {
     }
   };
 
-  // 📸 Handle image select + preview + compression
-  const handleImageChange = async (file) => {
+  // 📸 Handle image select + preview (NO compression)
+  const handleImageChange = (file) => {
     if (!file) return;
 
     const allowedTypes = [
@@ -39,26 +39,12 @@ function AdminGallery() {
       return alert("Only JPG, PNG, GIF, WEBP allowed");
     }
 
-    try {
-      // Compress image
-      const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1280,
-        useWebWorker: true,
-      };
+    // ✅ Use original file directly
+    setImage(file);
 
-      const compressedFile = await imageCompression(file, options);
-
-      setImage(compressedFile);
-
-      // Preview
-      const previewUrl = URL.createObjectURL(compressedFile);
-      setPreview(previewUrl);
-
-    } catch (error) {
-      console.error(error);
-      alert("Image processing failed");
-    }
+    // Preview
+    const previewUrl = URL.createObjectURL(file);
+    setPreview(previewUrl);
   };
 
   // 🚀 Upload image with progress
