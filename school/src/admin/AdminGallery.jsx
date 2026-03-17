@@ -104,7 +104,7 @@ function AdminGallery() {
               className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             >
               <img
-                src={`http://localhost:5000/uploads/${img.image}`}
+                src={`https://prakash-school-server-ru7x.onrender.com/${img.image}`}
                 alt={img.category}
                 className="h-40 w-full object-cover hover:scale-105 transition"
               />
