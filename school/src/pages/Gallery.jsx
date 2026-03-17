@@ -21,7 +21,7 @@ function Gallery() {
   },[]);
 
   const fetchImages = async()=>{
-    const res = await axios.get("http://localhost:5000/api/gallery");
+    const res = await axios.get("https://prakash-school-server-ru7x.onrender.com/api/gallery");
     setImages(res.data);
   };
 
@@ -65,7 +65,7 @@ function Gallery() {
             {filteredImages.map(img=>(
               <PhotoView
                 key={img._id}
-                src={`http://localhost:5000/uploads/${img.image}`}
+                src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
               >
 
                 <motion.div
@@ -74,7 +74,7 @@ function Gallery() {
                 >
 
                   <img
-                    src={`http://localhost:5000/uploads/${img.image}`}
+                    src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
                     className="w-full object-cover transition duration-500 group-hover:scale-110"
                   />
 
