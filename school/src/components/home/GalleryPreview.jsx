@@ -11,7 +11,7 @@ function GalleryPreview() {
   }, []);
 
   const fetchImages = async () => {
-    const res = await axios.get("http://localhost:5000/api/gallery");
+    const res = await axios.get("https://prakash-school-server-ru7x.onrender.com/api/gallery");
 
     const data = res.data;
 
@@ -42,7 +42,7 @@ function GalleryPreview() {
               <div className="group relative overflow-hidden rounded-xl shadow-lg cursor-pointer">
 
                 <img
-                  src={`http://localhost:5000/uploads/${img.image}`}
+                  src={`https://prakash-school-server-ru7x.onrender.com/${img.image}`}
                   alt={img.category}
                   loading="lazy"
                   className="w-full h-52 object-cover transition duration-500 group-hover:scale-110"
