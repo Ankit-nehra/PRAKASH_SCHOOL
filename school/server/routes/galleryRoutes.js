@@ -6,17 +6,17 @@ import { getImages, addImage, deleteImage } from "../controllers/galleryControll
 
 const router = express.Router();
 
-// Storage config
+// ✅ Storage configuration
 const storage = multer.diskStorage({
-  destination: "uploads/",
+  destination: "uploads/", // ensure this folder exists
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const safeName = Date.now() + "-" + file.originalname.replace(/\s+/g, "-");
+    // Lowercase filename + replace spaces with dashes
+    const safeName = Date.now() + "-" + file.originalname.replace(/\s+/g, "-").toLowerCase();
     cb(null, safeName);
   }
 });
 
-// File filter (ONLY images allowed)
+// ✅ File filter (allow only images)
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "image/png",
@@ -33,17 +33,19 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer setup
+// ✅ Multer setup
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
 });
 
-// Routes
+// ---------------------- Routes ----------------------
+
+// GET all images
 router.get("/", getImages);
 
-// Upload route with error handling
+// POST upload image
 router.post("/", protect, (req, res) => {
   upload.single("image")(req, res, (err) => {
     if (err) {
@@ -53,6 +55,7 @@ router.post("/", protect, (req, res) => {
   });
 });
 
+// DELETE image
 router.delete("/:id", protect, deleteImage);
 
 export default router;
