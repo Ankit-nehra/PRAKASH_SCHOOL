@@ -1,68 +1,121 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-function AdminLogin() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
-    try {
-      const { data } = await axios.post("https://prakash-school-server-ru7x.onrender.com/api/auth/login", {
-        username,
-        password,
-      });
+import { motion } from "framer-motion";
+import { startLoading, stopLoading } from "../components/Loader";
 
-      // Save JWT token in localStorage
-      localStorage.setItem("adminToken", data.token);
+function Gallery() {
+  const [images, setImages] = useState([]);
+  const [filter, setFilter] = useState("All");
+  const [loading, setLoading] = useState(true); // ✅ gallery level loading
 
-      // Navigate to admin dashboard
-      navigate("/admin");
-    } catch (err) {
-      // Handle API errors safely
-      setError(err.response?.data?.message || "Login failed");
-    }
-  };
+  const categories = ["All", "Events", "Campus", "Sports", "Classroom"];
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      setLoading(true); // start loader
+      startLoading();
+
+      try {
+        const res = await axios.get(
+          "https://prakash-school-server-ru7x.onrender.com/api/gallery"
+        );
+        setImages(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false); // stop loader
+        stopLoading();
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  const filteredImages =
+    filter === "All"
+      ? images
+      : images.filter((img) => img.category === filter);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded shadow-md w-full max-w-sm"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+    <div>
+      <Navbar />
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+      <div className="pt-24 max-w-7xl mx-auto px-6 py-10">
+        <h1 className="text-4xl font-bold text-blue-900 mb-8 text-center">
+          School Gallery
+        </h1>
 
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
-          required
-        />
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap justify-center gap-4 mb-10">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              className={`px-5 py-2 rounded-full border ${
+                filter === cat
+                  ? "bg-blue-900 text-white"
+                  : "bg-white hover:bg-blue-100"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-6 border rounded"
-          required
-        />
+        {/* ✅ Loader Logic */}
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <span className="text-gray-500 text-lg font-semibold">
+              Loading...
+            </span>
+          </div>
+        ) : (
+          <PhotoProvider>
+            <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
+              {filteredImages.length === 0 && (
+                <p className="text-center text-gray-500 col-span-full">
+                  No images found
+                </p>
+              )}
 
-        <button className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800 transition">
-          Login
-        </button>
-      </form>
+              {filteredImages.map((img) => (
+                <PhotoView
+                  key={img._id || img.image}
+                  src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
+                >
+                  <motion.div
+                    layout
+                    className="mb-4 cursor-pointer overflow-hidden rounded-xl shadow-lg group relative"
+                  >
+                    <img
+                      src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
+                      alt={img.category || "gallery image"}
+                      className="w-full object-cover transition duration-500 group-hover:scale-110"
+                    />
+
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                      <span className="text-white font-semibold">
+                        {img.category}
+                      </span>
+                    </div>
+                  </motion.div>
+                </PhotoView>
+              ))}
+            </div>
+          </PhotoProvider>
+        )}
+      </div>
+
+      <Footer />
     </div>
   );
 }
 
-export default AdminLogin;
+export default Gallery;
