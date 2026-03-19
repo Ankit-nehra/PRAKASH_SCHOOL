@@ -8,49 +8,49 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 
 import { motion } from "framer-motion";
-import { startLoading, stopLoading } from "../components/Loader"; // ✅ import loader
+import { startLoading, stopLoading } from "../components/Loader";
 
 function Gallery() {
-
   const [images, setImages] = useState([]);
   const [filter, setFilter] = useState("All");
 
-  const categories = ["All","Events","Campus","Sports","Classroom"];
+  const categories = ["All", "Events", "Campus", "Sports", "Classroom"];
 
   useEffect(() => {
+    const fetchImages = async () => {
+      startLoading();
+      try {
+        const res = await axios.get(
+          "https://prakash-school-server-ru7x.onrender.com/api/gallery"
+        );
+        setImages(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        stopLoading();
+      }
+    };
+
     fetchImages();
   }, []);
-
-  const fetchImages = async () => {
-    startLoading(); // ✅ start progress bar
-    try {
-      const res = await axios.get("https://prakash-school-server-ru7x.onrender.com/api/gallery");
-      setImages(res.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      stopLoading(); // ✅ stop progress bar after fetch
-    }
-  };
 
   const filteredImages =
     filter === "All"
       ? images
-      : images.filter(img => img.category === filter);
+      : images.filter((img) => img.category === filter);
 
   return (
     <div>
       <Navbar />
 
       <div className="pt-24 max-w-7xl mx-auto px-6 py-10">
-
         <h1 className="text-4xl font-bold text-blue-900 mb-8 text-center">
           School Gallery
         </h1>
 
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-10">
-          {categories.map(cat => (
+          {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
@@ -67,10 +67,17 @@ function Gallery() {
 
         <PhotoProvider>
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
+            
+            {/* Empty State */}
+            {filteredImages.length === 0 && (
+              <p className="text-center text-gray-500 col-span-full">
+                No images found
+              </p>
+            )}
 
-            {filteredImages.map(img => (
+            {filteredImages.map((img) => (
               <PhotoView
-                key={img._id}
+                key={img._id || img.image}
                 src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
               >
                 <motion.div
@@ -79,6 +86,8 @@ function Gallery() {
                 >
                   <img
                     src={`https://prakash-school-server-ru7x.onrender.com/uploads/${img.image}`}
+                    alt={img.category || "gallery image"}
+                    loading="lazy"
                     className="w-full object-cover transition duration-500 group-hover:scale-110"
                   />
 
@@ -93,7 +102,6 @@ function Gallery() {
 
           </div>
         </PhotoProvider>
-
       </div>
 
       <Footer />
