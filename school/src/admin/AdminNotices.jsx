@@ -11,6 +11,10 @@ function AdminNotices() {
   const [marker, setMarker] = useState(false);
   const [notices, setNotices] = useState([]);
 
+  // ✅ NEW STATES
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
     async function fetchNotices() {
       try {
@@ -35,10 +39,20 @@ function AdminNotices() {
     if (attachment) formData.append("attachment", attachment);
 
     try {
+      setUploading(true);
+      setUploadProgress(0);
+
       await axios.post("/notices", formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percent);
+        },
       });
 
+      // Reset form
       setTitle("");
       setDescription("");
       setDate("");
@@ -46,11 +60,15 @@ function AdminNotices() {
       setAttachment(null);
       setMarker(false);
 
+      // Refresh notices
       const { data } = await axios.get("/notices");
       setNotices(data);
     } catch (err) {
       console.error(err);
       alert("Failed to add notice");
+    } finally {
+      setUploading(false);
+      setTimeout(() => setUploadProgress(0), 500);
     }
   };
 
@@ -78,6 +96,7 @@ function AdminNotices() {
         {/* Add Notice Form */}
         <div className="bg-white shadow-md rounded-xl p-6 mb-10">
           <h2 className="text-xl font-semibold mb-6">Add New Notice</h2>
+
           <div className="grid md:grid-cols-2 gap-4">
             <div className="flex flex-col">
               <label className="font-medium mb-1">Title *</label>
@@ -119,7 +138,9 @@ function AdminNotices() {
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium mb-1">Attachment (PDF, DOCX, optional)</label>
+              <label className="font-medium mb-1">
+                Attachment (PDF, DOCX, optional)
+              </label>
               <input
                 type="file"
                 accept=".pdf,.docx"
@@ -136,12 +157,32 @@ function AdminNotices() {
               <span className="font-medium">Mark as Important</span>
             </div>
 
+            {/* ✅ PROGRESS BAR */}
+            {uploading && (
+              <div className="md:col-span-2">
+                <div className="w-full bg-gray-200 rounded h-3 overflow-hidden">
+                  <div
+                    className="bg-blue-600 h-3 transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm text-gray-600 mt-1">
+                  Uploading: {uploadProgress}%
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-end md:col-span-2">
               <button
                 onClick={addNotice}
-                className="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition"
+                disabled={uploading}
+                className={`px-6 py-2 rounded-lg text-white transition ${
+                  uploading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-900 hover:bg-blue-800"
+                }`}
               >
-                Add Notice
+                {uploading ? "Uploading..." : "Add Notice"}
               </button>
             </div>
           </div>
@@ -172,7 +213,9 @@ function AdminNotices() {
                 notices.map((n) => (
                   <tr
                     key={n._id}
-                    className={`border-b hover:bg-gray-50 transition ${n.marker ? "bg-yellow-50" : ""}`}
+                    className={`border-b hover:bg-gray-50 transition ${
+                      n.marker ? "bg-yellow-50" : ""
+                    }`}
                   >
                     <td className="p-4">{n.date}</td>
                     <td className="p-4 font-medium">{n.title}</td>
@@ -193,6 +236,7 @@ function AdminNotices() {
                         <a
                           href={`https://prakash-school-server-ru7x.onrender.com/uploads/${n.attachment}`}
                           target="_blank"
+                          rel="noreferrer"
                           className="text-blue-700 underline"
                         >
                           {n.attachment}
@@ -222,6 +266,7 @@ function AdminNotices() {
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   );
