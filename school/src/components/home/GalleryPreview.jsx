@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { startLoading, stopLoading } from "../components/Loader"; // ✅ import loader
 
 function GalleryPreview() {
 
@@ -11,19 +12,27 @@ function GalleryPreview() {
   }, []);
 
   const fetchImages = async () => {
-    const res = await axios.get("https://prakash-school-server-ru7x.onrender.com/api/gallery");
+    startLoading(); // ✅ start progress bar
+    try {
+      const res = await axios.get("https://prakash-school-server-ru7x.onrender.com/api/gallery");
 
-    const data = res.data;
+      const data = res.data;
 
-    // categories we want
-    const categories = ["Events", "Classroom", "Sports", "Campus"];
+      // categories we want
+      const categories = ["Events", "Classroom", "Sports", "Campus"];
 
-    // pick first image from each category
-    const previewImages = categories.map(cat =>
-      data.find(img => img.category === cat)
-    ).filter(Boolean);
+      // pick first image from each category
+      const previewImages = categories.map(cat =>
+        data.find(img => img.category === cat)
+      ).filter(Boolean);
 
-    setImages(previewImages);
+      setImages(previewImages);
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      stopLoading(); // ✅ stop progress bar after fetch
+    }
   };
 
   return (
