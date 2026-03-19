@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "../utils/axiosInstance";
 import Navbar from "../components/layout/Navbar";
-// ❌ Removed imageCompression import
 
 function AdminGallery() {
   const [image, setImage] = useState(null);
@@ -9,6 +8,9 @@ function AdminGallery() {
   const [category, setCategory] = useState("");
   const [images, setImages] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  // ✅ NEW STATE
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchImages();
@@ -23,7 +25,7 @@ function AdminGallery() {
     }
   };
 
-  // 📸 Handle image select + preview (NO compression)
+  // 📸 Handle image select + preview
   const handleImageChange = (file) => {
     if (!file) return;
 
@@ -39,10 +41,8 @@ function AdminGallery() {
       return alert("Only JPG, PNG, GIF, WEBP allowed");
     }
 
-    // ✅ Use original file directly
     setImage(file);
 
-    // Preview
     const previewUrl = URL.createObjectURL(file);
     setPreview(previewUrl);
   };
@@ -58,6 +58,7 @@ function AdminGallery() {
     formData.append("category", category);
 
     try {
+      setUploading(true); // ✅ START DISABLE
       setUploadProgress(0);
 
       await axios.post("/gallery", formData, {
@@ -80,6 +81,8 @@ function AdminGallery() {
       console.error(err);
       alert(err.response?.data?.message || "Upload failed");
       setUploadProgress(0);
+    } finally {
+      setUploading(false); // ✅ ENABLE AGAIN
     }
   };
 
@@ -116,12 +119,14 @@ function AdminGallery() {
               accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
               className="border p-2 rounded w-full"
               onChange={(e) => handleImageChange(e.target.files[0])}
+              disabled={uploading} // ✅ optional but good
             />
 
             <select
               className="border p-2 rounded w-full md:w-60"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              disabled={uploading} // ✅ optional
             >
               <option value="">Select Category</option>
               <option>Events</option>
@@ -132,9 +137,14 @@ function AdminGallery() {
 
             <button
               onClick={uploadImage}
-              className="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition"
+              disabled={uploading} // ✅ MAIN CHANGE
+              className={`px-6 py-2 rounded-lg text-white transition ${
+                uploading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-900 hover:bg-blue-800"
+              }`}
             >
-              Upload Image
+              {uploading ? "Uploading..." : "Upload Image"}
             </button>
           </div>
 
