@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { startLoading, stopLoading } from "../components/Loader"; // ✅ import loader
 
 function NoticeBoard() {
   const [notices, setNotices] = useState([]);
 
   useEffect(() => {
     async function fetchNotices() {
+      startLoading(); // ✅ start top progress bar
       try {
-        const res = await axios.get("https://prakash-school-server-ru7x.onrender.com/api/notices");
+        const res = await axios.get(
+          "https://prakash-school-server-ru7x.onrender.com/api/notices"
+        );
         setNotices(res.data);
       } catch (err) {
         console.error(err);
+      } finally {
+        stopLoading(); // ✅ stop progress bar after data fetch
       }
     }
     fetchNotices();
