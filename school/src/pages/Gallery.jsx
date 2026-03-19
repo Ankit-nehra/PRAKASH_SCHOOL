@@ -3,7 +3,7 @@ import axios from "axios";
 
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-
+ 
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 
