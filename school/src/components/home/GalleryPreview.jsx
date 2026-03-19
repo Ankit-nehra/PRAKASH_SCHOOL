@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { startLoading, stopLoading } from "../components/Loader"; // ✅ import loader
+import { startLoading, stopLoading } from "../Loader"; // ✅ import loader
 
 function GalleryPreview() {
 
