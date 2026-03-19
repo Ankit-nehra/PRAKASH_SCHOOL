@@ -15,12 +15,23 @@ import AdminGallery from "../admin/AdminGallery";
 import AdminLogin from "../admin/AdminLogin";
 import PrivateRoute from "../admin/PrivateRoute";
 
-// Scroll to top on route change
+// ✅ NProgress imports
+import { startLoading, stopLoading } from "../components/Loader";
+
+// Scroll to top + trigger NProgress on route change
 function ScrollToTopHandler() {
   const { pathname } = useLocation();
+
   useEffect(() => {
+    startLoading(); // start top bar
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Stop progress after short delay to ensure visibility
+    const timer = setTimeout(() => stopLoading(), 300);
+
+    return () => clearTimeout(timer);
   }, [pathname]);
+
   return null;
 }
 
