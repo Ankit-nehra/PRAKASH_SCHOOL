@@ -5,7 +5,7 @@ import { startLoading, stopLoading } from "../Loader"; // ✅ import loader
 function NoticeBoard() {
   const [notices, setNotices] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => { 
     async function fetchNotices() {
       startLoading(); // ✅ start top progress bar
       try {
