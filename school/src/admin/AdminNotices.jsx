@@ -11,21 +11,32 @@ function AdminNotices() {
   const [marker, setMarker] = useState(false);
   const [notices, setNotices] = useState([]);
 
-  // ✅ NEW STATES
+  // ✅ Upload + Preview States
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [attachmentPreview, setAttachmentPreview] = useState(null);
 
   useEffect(() => {
-    async function fetchNotices() {
-      try {
-        const { data } = await axios.get("/notices");
-        setNotices(data);
-      } catch (err) {
-        console.error(err);
-      }
-    }
     fetchNotices();
   }, []);
+
+  const fetchNotices = async () => {
+    try {
+      const { data } = await axios.get("/notices");
+      setNotices(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ✅ Cleanup preview URLs
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+      if (attachmentPreview) URL.revokeObjectURL(attachmentPreview);
+    };
+  }, [imagePreview, attachmentPreview]);
 
   const addNotice = async () => {
     if (!title || !date) return alert("Enter title and date");
@@ -44,25 +55,23 @@ function AdminNotices() {
 
       await axios.post("/notices", formData, {
         headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (progressEvent) => {
-          const percent = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
+        onUploadProgress: (e) => {
+          const percent = Math.round((e.loaded * 100) / e.total);
           setUploadProgress(percent);
         },
       });
 
-      // Reset form
+      // ✅ Reset form
       setTitle("");
       setDescription("");
       setDate("");
       setImage(null);
       setAttachment(null);
       setMarker(false);
+      setImagePreview(null);
+      setAttachmentPreview(null);
 
-      // Refresh notices
-      const { data } = await axios.get("/notices");
-      setNotices(data);
+      fetchNotices();
     } catch (err) {
       console.error(err);
       alert("Failed to add notice");
@@ -93,177 +102,221 @@ function AdminNotices() {
           Notice Management
         </h1>
 
-        {/* Add Notice Form */}
+        {/* FORM */}
         <div className="bg-white shadow-md rounded-xl p-6 mb-10">
           <h2 className="text-xl font-semibold mb-6">Add New Notice</h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Title *</label>
+
+            {/* Title */}
+            <div>
+              <label className="font-medium">Title *</label>
               <input
-                className="border p-2 rounded"
-                placeholder="Notice title"
+                className="border p-2 rounded w-full"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
 
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Date *</label>
+            {/* Date */}
+            <div>
+              <label className="font-medium">Date *</label>
               <input
                 type="date"
-                className="border p-2 rounded"
+                className="border p-2 rounded w-full"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
             </div>
 
-            <div className="flex flex-col md:col-span-2">
-              <label className="font-medium mb-1">Description</label>
+            {/* Description */}
+            <div className="md:col-span-2">
+              <label className="font-medium">Description</label>
               <textarea
-                className="border p-2 rounded"
-                placeholder="Notice description"
+                className="border p-2 rounded w-full"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Image (optional)</label>
+            {/* IMAGE */}
+            <div>
+              <label className="font-medium">Image</label>
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => setImage(e.target.files[0])}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setImage(file);
+                  if (file) setImagePreview(URL.createObjectURL(file));
+                }}
               />
+
+              {image && (
+                <div className="mt-3 p-3 border rounded bg-gray-50">
+                  <img
+                    src={imagePreview}
+                    className="w-24 h-24 object-cover rounded mb-2"
+                    alt="preview"
+                  />
+                  <p className="text-sm">{image.name}</p>
+                  <p className="text-xs text-gray-500">
+                    {(image.size / 1024).toFixed(2)} KB
+                  </p>
+                  <button
+                    onClick={() => {
+                      setImage(null);
+                      setImagePreview(null);
+                    }}
+                    className="mt-2 text-red-500 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">
-                Attachment (PDF, DOCX, optional)
-              </label>
+            {/* FILE */}
+            <div>
+              <label className="font-medium">Attachment</label>
               <input
                 type="file"
                 accept=".pdf,.docx"
-                onChange={(e) => setAttachment(e.target.files[0])}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setAttachment(file);
+                  if (file) setAttachmentPreview(URL.createObjectURL(file));
+                }}
               />
+
+              {attachment && (
+                <div className="mt-3 p-3 border rounded bg-gray-50">
+                  <p className="text-sm">{attachment.name}</p>
+                  <p className="text-xs text-gray-500">
+                    {(attachment.size / 1024).toFixed(2)} KB
+                  </p>
+
+                  {attachment.type === "application/pdf" && (
+                    <iframe
+                      src={attachmentPreview}
+                      className="w-full h-32 mt-2 border rounded"
+                      title="preview"
+                    />
+                  )}
+
+                  <button
+                    onClick={() => {
+                      setAttachment(null);
+                      setAttachmentPreview(null);
+                    }}
+                    className="mt-2 text-red-500 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
 
+            {/* Marker */}
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={marker}
                 onChange={(e) => setMarker(e.target.checked)}
               />
-              <span className="font-medium">Mark as Important</span>
+              <span>Mark as Important</span>
             </div>
 
-            {/* ✅ PROGRESS BAR */}
+            {/* PROGRESS */}
             {uploading && (
               <div className="md:col-span-2">
-                <div className="w-full bg-gray-200 rounded h-3 overflow-hidden">
+                <div className="w-full bg-gray-200 h-3 rounded">
                   <div
-                    className="bg-blue-600 h-3 transition-all duration-300"
+                    className="bg-blue-600 h-3"
                     style={{ width: `${uploadProgress}%` }}
-                  ></div>
+                  />
                 </div>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm mt-1">
                   Uploading: {uploadProgress}%
                 </p>
               </div>
             )}
 
-            <div className="flex justify-end md:col-span-2">
+            {/* BUTTON */}
+            <div className="md:col-span-2 text-right">
               <button
                 onClick={addNotice}
                 disabled={uploading}
-                className={`px-6 py-2 rounded-lg text-white transition ${
-                  uploading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-900 hover:bg-blue-800"
+                className={`px-6 py-2 text-white rounded ${
+                  uploading ? "bg-gray-400" : "bg-blue-900 hover:bg-blue-800"
                 }`}
               >
                 {uploading ? "Uploading..." : "Add Notice"}
               </button>
             </div>
+
           </div>
         </div>
 
-        {/* Notices Table */}
-        <div className="bg-white shadow-md rounded-xl overflow-hidden">
-          <table className="w-full text-left">
+        {/* TABLE */}
+        <div className="bg-white rounded shadow overflow-hidden">
+          <table className="w-full">
             <thead className="bg-blue-900 text-white">
               <tr>
-                <th className="p-4">Date</th>
-                <th className="p-4">Title</th>
-                <th className="p-4">Description</th>
-                <th className="p-4">Image</th>
-                <th className="p-4">Attachment</th>
-                <th className="p-4 text-center">Marker</th>
-                <th className="p-4 text-center">Action</th>
+                <th className="p-3">Date</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>File</th>
+                <th>Marker</th>
+                <th>Action</th>
               </tr>
             </thead>
+
             <tbody>
-              {notices.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="text-center p-6 text-gray-500">
-                    No notices available
+              {notices.map((n) => (
+                <tr key={n._id} className="border-t">
+                  <td className="p-3">{n.date}</td>
+                  <td>{n.title}</td>
+                  <td>{n.description || "-"}</td>
+
+                  <td>
+                    {n.image && (
+                      <img
+                        src={`https://prakash-school-server-ru7x.onrender.com/uploads/${n.image}`}
+                        className="w-12 h-12 object-cover"
+                        alt=""
+                      />
+                    )}
+                  </td>
+
+                  <td>
+                    {n.attachment && (
+                      <a
+                        href={`https://prakash-school-server-ru7x.onrender.com/uploads/${n.attachment}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        View
+                      </a>
+                    )}
+                  </td>
+
+                  <td>{n.marker && "Important"}</td>
+
+                  <td>
+                    <button
+                      onClick={() => deleteNotice(n._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                notices.map((n) => (
-                  <tr
-                    key={n._id}
-                    className={`border-b hover:bg-gray-50 transition ${
-                      n.marker ? "bg-yellow-50" : ""
-                    }`}
-                  >
-                    <td className="p-4">{n.date}</td>
-                    <td className="p-4 font-medium">{n.title}</td>
-                    <td className="p-4">{n.description || "-"}</td>
-                    <td className="p-4">
-                      {n.image ? (
-                        <img
-                          src={`https://prakash-school-server-ru7x.onrender.com/uploads/${n.image}`}
-                          alt="notice"
-                          className="h-16 w-16 object-cover rounded"
-                        />
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="p-4">
-                      {n.attachment ? (
-                        <a
-                          href={`https://prakash-school-server-ru7x.onrender.com/uploads/${n.attachment}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-blue-700 underline"
-                        >
-                          {n.attachment}
-                        </a>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="p-4 text-center">
-                      {n.marker && (
-                        <span className="bg-red-500 text-white px-2 py-1 rounded text-sm">
-                          Important
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-4 text-center">
-                      <button
-                        onClick={() => deleteNotice(n._id)}
-                        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
+
           </table>
         </div>
 
