@@ -13,13 +13,13 @@ import { startLoading, stopLoading } from "../components/Loader";
 function Gallery() {
   const [images, setImages] = useState([]);
   const [filter, setFilter] = useState("All");
-  const [loading, setLoading] = useState(true); // ✅ gallery level loading
+  const [loading, setLoading] = useState(true);
 
   const categories = ["All", "Events", "Campus", "Sports", "Classroom"];
 
   useEffect(() => {
     const fetchImages = async () => {
-      setLoading(true); // start loader
+      setLoading(true);
       startLoading();
 
       try {
@@ -30,7 +30,7 @@ function Gallery() {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false); // stop loader
+        setLoading(false);
         stopLoading();
       }
     };
@@ -69,12 +69,13 @@ function Gallery() {
           ))}
         </div>
 
-        {/* ✅ Loader Logic */}
+        {/* Professional Loading Screen */}
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <span className="text-gray-500 text-lg font-semibold">
-              Loading...
-            </span>
+          <div className="flex flex-col justify-center items-center h-64 space-y-4">
+            <div className="w-16 h-16 border-4 border-blue-900 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-700 text-lg font-semibold">
+              Loading Images...
+            </p>
           </div>
         ) : (
           <PhotoProvider>
