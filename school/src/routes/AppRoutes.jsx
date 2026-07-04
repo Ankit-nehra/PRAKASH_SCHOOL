@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Home from "../pages/Home";
 import About from "../pages/About";
@@ -14,6 +14,8 @@ import AdminGallery from "../admin/AdminGallery";
 
 import AdminLogin from "../admin/AdminLogin";
 import PrivateRoute from "../admin/PrivateRoute";
+
+import Loader from "../components/LoaderBus/Loader";
 
 // ✅ NProgress imports
 import { startLoading, stopLoading } from "../components/Loader";
@@ -36,6 +38,21 @@ function ScrollToTopHandler() {
 }
 
 function AppRoutes() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1800); // 3.5 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+  
+
   return (
     <BrowserRouter>
       <ScrollToTopHandler />
@@ -77,6 +94,7 @@ function AppRoutes() {
       </Routes>
     </BrowserRouter>
   );
+
 }
 
 export default AppRoutes;
