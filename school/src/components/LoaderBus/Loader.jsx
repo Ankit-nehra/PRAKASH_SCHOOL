@@ -25,14 +25,7 @@ export default function Loader() {
         
 
       </div>
-<div className="road">
-  <div className="white-line"></div>
-  <div className="white-line"></div>
-  <div className="white-line"></div>
-  <div className="white-line"></div>
-  <div className="white-line"></div>
-  <div className="white-line"></div>
-</div>
+
     </div>
   );
 }
