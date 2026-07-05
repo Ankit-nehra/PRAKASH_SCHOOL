@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: "https://prakash-school-1-qy60.onrender.com/api",
 });
 
 // Attach admin token automatically
