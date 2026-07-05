@@ -1,0 +1,46 @@
+------------------ folder structure  --------------------
+school
+
+>public
+src
+│
+├── assets
+│   ├── images
+│   └── icons
+│
+├── components
+│   ├── layout
+│   │   ├── Navbar.jsx
+│   │   └── Footer.jsx
+│   │
+│   ├── home
+│   │   ├── Hero.jsx
+│   │   ├── AboutPreview.jsx
+│   │   ├── NoticeBoard.jsx
+│   │   ├── AcademicsSection.jsx
+│   │   ├── GalleryPreview.jsx
+│   │   └── PrincipalMessage.jsx
+│
+├── pages
+│   ├── Home.jsx
+│   ├── About.jsx
+│   ├── Academics.jsx
+│   ├── Admission.jsx
+│   ├── Gallery.jsx
+│   └── Contact.jsx
+│
+├── data
+│   └── notices.js
+│
+├── routes
+│   └── AppRoutes.jsx
+│
+├── App.jsx
+├── main.jsx
+└── index.css
+eslint.config.js
+index.html
+package-lock.json
+package.json
+README.node_modules
+vite.config.js

@@ -1,0 +1,32 @@
+File Upload Problem
+multipart/form-data kya hota hai
+Multer kya hai
+Multer internally kaise work karta hai
+Installation
+Basic Upload
+Multer Object
+Storage Engine
+DiskStorage
+MemoryStorage
+upload.single()
+upload.array()
+upload.fields()
+upload.none()
+upload.any()
+req.file
+req.files
+fileFilter
+limits
+filename function
+destination function
+Image Upload
+Video Upload
+PDF Upload
+Multiple Files
+Error Handling
+Production Best Practices
+Multer + Cloudinary
+Multer Internal Working
+Complete Flow Diagram
+
+__________________________________________________________________________________________________________
