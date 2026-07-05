@@ -24,7 +24,7 @@ function Gallery() {
 
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/gallery"
+          "https://prakash-school-1-qy60.onrender.com/api/gallery"
         );
         setImages(res.data);
       } catch (err) {
