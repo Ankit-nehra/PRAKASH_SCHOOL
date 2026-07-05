@@ -14,7 +14,7 @@ function GalleryPreview() {
   const fetchImages = async () => {
     startLoading(); // ✅ start progress bar
     try {
-      const res = await axios.get("http://localhost:3000/api/gallery");
+      const res = await axios.get("https://prakash-school-1-qy60.onrender.com/api/gallery");
 
       const data = res.data;
 
