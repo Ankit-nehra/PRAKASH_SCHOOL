@@ -13,7 +13,7 @@ function NoticeBoard() {
 
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/notices"
+          "https://prakash-school-1-qy60.onrender.com/api/notices"
         );
         console.log(res.files);
         setNotices(res.data);
