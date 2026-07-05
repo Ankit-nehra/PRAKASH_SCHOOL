@@ -1,4 +1,4 @@
-import Gallery from "../models/gallery.js";
+import Gallery from "../models/Gallery.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
