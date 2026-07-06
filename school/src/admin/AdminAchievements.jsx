@@ -32,7 +32,7 @@ function AdminAchievements() {
 
   const fetchAchievements = async () => {
     try {
-      const { data } = await axios.get("/achievements");
+      const { data } = await axios.get("/api/achievements");
       setAchievements(data);
     } catch (err) {
       console.error(err);
