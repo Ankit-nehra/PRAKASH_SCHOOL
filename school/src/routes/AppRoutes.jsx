@@ -11,6 +11,7 @@ import Contact from "../pages/Contact";
 import AdminDashboard from "../admin/AdminDashboard";
 import AdminNotices from "../admin/AdminNotices";
 import AdminGallery from "../admin/AdminGallery";
+import AdminAchievements from "../admin/AdminAchievements";
 
 import AdminLogin from "../admin/AdminLogin";
 import PrivateRoute from "../admin/PrivateRoute";
@@ -91,6 +92,14 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
+        <Route
+  path="/admin/achievements"
+  element={
+  <PrivateRoute>
+    <AdminAchievements />
+  </PrivateRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
