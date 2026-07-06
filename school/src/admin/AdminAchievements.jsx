@@ -311,81 +311,76 @@ function AdminAchievements() {
 
         </div>
 
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+       <div className="bg-white rounded-xl shadow overflow-hidden">
 
   <div className="overflow-x-auto">
 
-    <table className="w-full min-w-[750px]">
+    <div className="max-h-[320px] overflow-y-auto">
 
-      <thead className="bg-blue-900 text-white">
+      <table className="w-full min-w-[750px]">
 
-        <tr>
-          <th className="p-3">Image</th>
-          <th className="p-3">Title</th>
-          <th className="p-3">Category</th>
-          <th className="p-3">Student</th>
-          <th className="p-3">Class</th>
-          <th className="p-3">Date</th>
-          <th className="p-3">Action</th>
-        </tr>
+        <thead className="bg-blue-900 text-white sticky top-0 z-10">
 
-      </thead>
-
-      <tbody>
-
-        {achievements.map((item) => (
-
-          <tr
-            key={item._id}
-            className="border-t"
-          >
-
-            <td className="p-3">
-              {item.image && (
-                <img
-                  src={item.image}
-                  alt=""
-                  className="w-16 h-16 rounded object-cover"
-                />
-              )}
-            </td>
-
-            <td className="p-3">{item.title}</td>
-
-            <td className="p-3">{item.category}</td>
-
-            <td className="p-3">
-              {item.studentName || "-"}
-            </td>
-
-            <td className="p-3">
-              {item.studentClass || "-"}
-            </td>
-
-            <td className="p-3">
-              {item.achievementDate
-                ? item.achievementDate.substring(0, 10)
-                : "-"}
-            </td>
-
-            <td className="p-3">
-              <button
-                onClick={() =>
-                  deleteAchievement(item._id)
-                }
-                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded whitespace-nowrap"
-              >
-                Delete
-              </button>
-            </td>
-
+          <tr>
+            <th className="p-3">Image</th>
+            <th className="p-3">Title</th>
+            <th className="p-3">Category</th>
+            <th className="p-3">Student</th>
+            <th className="p-3">Class</th>
+            <th className="p-3">Date</th>
+            <th className="p-3">Action</th>
           </tr>
 
-        ))}
+        </thead>
 
-      </tbody>
+        <tbody>
 
-    </table>
+          {achievements.map((item) => (
+
+            <tr key={item._id} className="border-t">
+
+              <td className="p-3">
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt=""
+                    className="w-16 h-16 rounded object-cover"
+                  />
+                )}
+              </td>
+
+              <td className="p-3">{item.title}</td>
+
+              <td className="p-3">{item.category}</td>
+
+              <td className="p-3">{item.studentName || "-"}</td>
+
+              <td className="p-3">{item.studentClass || "-"}</td>
+
+              <td className="p-3">
+                {item.achievementDate
+                  ? item.achievementDate.substring(0, 10)
+                  : "-"}
+              </td>
+
+              <td className="p-3">
+                <button
+                  onClick={() => deleteAchievement(item._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded whitespace-nowrap"
+                >
+                  Delete
+                </button>
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   </div>
 
