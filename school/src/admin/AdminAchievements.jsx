@@ -313,85 +313,83 @@ function AdminAchievements() {
 
         <div className="bg-white rounded-xl shadow overflow-hidden">
 
-          <table className="w-full">
+  <div className="overflow-x-auto">
 
-            <thead className="bg-blue-900 text-white">
+    <table className="w-full min-w-[750px]">
 
-              <tr>
-                <th className="p-3">Image</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Student</th>
-                <th>Class</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
+      <thead className="bg-blue-900 text-white">
 
-            </thead>
+        <tr>
+          <th className="p-3">Image</th>
+          <th className="p-3">Title</th>
+          <th className="p-3">Category</th>
+          <th className="p-3">Student</th>
+          <th className="p-3">Class</th>
+          <th className="p-3">Date</th>
+          <th className="p-3">Action</th>
+        </tr>
 
-            <tbody>
+      </thead>
 
-              {achievements.map((item) => (
+      <tbody>
 
-                <tr
-                  key={item._id}
-                  className="border-t"
-                >
+        {achievements.map((item) => (
 
-                  <td className="p-3">
-                    {item.image && (
-                      <img
-                        src={item.image}
-                        alt=""
-                        className="w-16 h-16 rounded object-cover"
-                      />
-                    )}
-                  </td>
+          <tr
+            key={item._id}
+            className="border-t"
+          >
 
-                  <td>{item.title}</td>
+            <td className="p-3">
+              {item.image && (
+                <img
+                  src={item.image}
+                  alt=""
+                  className="w-16 h-16 rounded object-cover"
+                />
+              )}
+            </td>
 
-                  <td>{item.category}</td>
+            <td className="p-3">{item.title}</td>
 
-                  <td>
-                    {item.studentName || "-"}
-                  </td>
+            <td className="p-3">{item.category}</td>
 
-                  <td>
-                    {item.studentClass || "-"}
-                  </td>
+            <td className="p-3">
+              {item.studentName || "-"}
+            </td>
 
-                  <td>
-                    {item.achievementDate
-                      ? item.achievementDate.substring(
-                          0,
-                          10
-                        )
-                      : "-"}
-                  </td>
+            <td className="p-3">
+              {item.studentClass || "-"}
+            </td>
 
-                  <td>
+            <td className="p-3">
+              {item.achievementDate
+                ? item.achievementDate.substring(0, 10)
+                : "-"}
+            </td>
 
-                    <button
-                      onClick={() =>
-                        deleteAchievement(item._id)
-                      }
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+            <td className="p-3">
+              <button
+                onClick={() =>
+                  deleteAchievement(item._id)
+                }
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded whitespace-nowrap"
+              >
+                Delete
+              </button>
+            </td>
 
-                  </td>
+          </tr>
 
-                </tr>
+        ))}
 
-              ))}
+      </tbody>
 
-            </tbody>
+    </table>
 
-          </table>
+  </div>
 
-        </div>
-
+</div>
       </div>
     </div>
   );
