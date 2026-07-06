@@ -66,6 +66,24 @@ function AdminDashboard() {
             </div>
           </Link>
 
+          <Link to="/admin/achievements">
+  <div className="p-8 bg-white shadow-md rounded-xl hover:shadow-2xl hover:-translate-y-1 transition border">
+
+    <div className="flex items-center gap-4 mb-3">
+      <div className="text-3xl">🏆</div>
+
+      <h2 className="text-xl font-semibold">
+        Manage Achievements
+      </h2>
+    </div>
+
+    <p className="text-gray-600">
+      Add, edit or remove school achievements.
+    </p>
+
+  </div>
+</Link>
+
         </div>
 
       </div>
