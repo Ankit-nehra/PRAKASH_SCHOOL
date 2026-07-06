@@ -106,28 +106,30 @@ function AdminAchievements() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 overflow-x-hidden">
       <Navbar />
 
-      <div className="pt-24 max-w-6xl mx-auto px-6">
+      {/* PAGE WRAPPER FIXED */}
+      <div className="pt-24 max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
 
         <h1 className="text-3xl font-bold text-blue-900 mb-8">
           Achievement Management
         </h1>
 
         {/* FORM */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-10">
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-10">
 
           <h2 className="text-xl font-semibold mb-6">
             Add Achievement
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-5">
+          {/* GRID FIX */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
 
             <div>
               <label className="font-medium">Title *</label>
               <input
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full min-w-0"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
@@ -136,7 +138,7 @@ function AdminAchievements() {
             <div>
               <label className="font-medium">Category</label>
               <select
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full min-w-0"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
@@ -150,7 +152,7 @@ function AdminAchievements() {
             <div>
               <label className="font-medium">Student Name</label>
               <input
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full min-w-0"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
               />
@@ -159,7 +161,7 @@ function AdminAchievements() {
             <div>
               <label className="font-medium">Class</label>
               <input
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full min-w-0"
                 value={studentClass}
                 onChange={(e) => setStudentClass(e.target.value)}
               />
@@ -169,7 +171,7 @@ function AdminAchievements() {
               <label className="font-medium">Achievement Date</label>
               <input
                 type="date"
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full min-w-0"
                 value={achievementDate}
                 onChange={(e) => setAchievementDate(e.target.value)}
               />
@@ -198,6 +200,7 @@ function AdminAchievements() {
                     alt=""
                     className="w-24 h-24 rounded object-cover mb-2"
                   />
+
                   <p className="text-sm">{image.name}</p>
                   <p className="text-xs text-gray-500">
                     {(image.size / 1024).toFixed(2)} KB
@@ -216,18 +219,18 @@ function AdminAchievements() {
               )}
             </div>
 
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <label className="font-medium">Description *</label>
               <textarea
                 rows={4}
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full min-w-0"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
             {uploading && (
-              <div className="md:col-span-2">
+              <div className="sm:col-span-2">
                 <div className="w-full h-3 bg-gray-200 rounded">
                   <div
                     className="bg-blue-700 h-3 rounded"
@@ -240,11 +243,11 @@ function AdminAchievements() {
               </div>
             )}
 
-            <div className="md:col-span-2 text-right">
+            <div className="sm:col-span-2 text-right">
               <button
                 disabled={uploading}
                 onClick={addAchievement}
-                className={`px-6 py-2 rounded text-white ${
+                className={`px-6 py-2 rounded text-white w-full sm:w-auto ${
                   uploading
                     ? "bg-gray-400"
                     : "bg-blue-900 hover:bg-blue-800"
@@ -257,10 +260,9 @@ function AdminAchievements() {
           </div>
         </div>
 
-        {/* TABLE (FIXED RESPONSIVE) */}
+        {/* TABLE */}
         <div className="bg-white rounded-xl shadow overflow-hidden">
 
-          {/* Mobile safe scroll container */}
           <div className="md:max-h-none max-h-[320px] overflow-y-auto">
 
             <div className="overflow-x-auto">
@@ -268,7 +270,6 @@ function AdminAchievements() {
               <table className="w-full min-w-[750px]">
 
                 <thead className="bg-blue-900 text-white sticky top-0 z-10">
-
                   <tr>
                     <th className="p-3">Image</th>
                     <th className="p-3">Title</th>
@@ -278,11 +279,9 @@ function AdminAchievements() {
                     <th className="p-3">Date</th>
                     <th className="p-3">Action</th>
                   </tr>
-
                 </thead>
 
                 <tbody>
-
                   {achievements.map((item) => (
                     <tr key={item._id} className="border-t">
 
@@ -300,7 +299,6 @@ function AdminAchievements() {
                       <td className="p-3">{item.category}</td>
                       <td className="p-3">{item.studentName || "-"}</td>
                       <td className="p-3">{item.studentClass || "-"}</td>
-
                       <td className="p-3">
                         {item.achievementDate
                           ? item.achievementDate.substring(0, 10)
@@ -318,7 +316,6 @@ function AdminAchievements() {
 
                     </tr>
                   ))}
-
                 </tbody>
 
               </table>
