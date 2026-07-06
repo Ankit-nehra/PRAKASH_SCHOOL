@@ -11,7 +11,6 @@ function AdminNotices() {
   const [marker, setMarker] = useState(false);
   const [notices, setNotices] = useState([]);
 
-  // ✅ Upload + Preview States
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -25,13 +24,11 @@ function AdminNotices() {
     try {
       const { data } = await axios.get("/notices");
       setNotices(data);
-      console.log(data);
     } catch (err) {
       console.error(err);
     }
   };
 
-  // ✅ Cleanup preview URLs
   useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
@@ -62,7 +59,6 @@ function AdminNotices() {
         },
       });
 
-      // ✅ Reset form
       setTitle("");
       setDescription("");
       setDate("");
@@ -95,46 +91,48 @@ function AdminNotices() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 overflow-x-hidden">
       <Navbar />
-      <div className="pt-24 max-w-6xl mx-auto px-6">
+
+      <div className="pt-24 max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
 
         <h1 className="text-3xl font-bold text-blue-900 mb-8">
           Notice Management
         </h1>
 
         {/* FORM */}
-        <div className="bg-white shadow-md rounded-xl p-6 mb-10">
-          <h2 className="text-xl font-semibold mb-6">Add New Notice</h2>
+        <div className="bg-white shadow-md rounded-xl p-4 sm:p-6 mb-10">
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <h2 className="text-xl font-semibold mb-6">
+            Add New Notice
+          </h2>
 
-            {/* Title */}
+          {/* RESPONSIVE GRID FIX */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+
             <div>
               <label className="font-medium">Title *</label>
               <input
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded w-full min-w-0"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
 
-            {/* Date */}
             <div>
               <label className="font-medium">Date *</label>
               <input
                 type="date"
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded w-full min-w-0"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
             </div>
 
-            {/* Description */}
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <label className="font-medium">Description</label>
               <textarea
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded w-full min-w-0"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
@@ -177,7 +175,7 @@ function AdminNotices() {
               )}
             </div>
 
-            {/* FILE */}
+            {/* ATTACHMENT */}
             <div>
               <label className="font-medium">Attachment</label>
               <input
@@ -218,8 +216,8 @@ function AdminNotices() {
               )}
             </div>
 
-            {/* Marker */}
-            <div className="flex items-center gap-2">
+            {/* MARKER */}
+            <div className="flex items-center gap-2 sm:col-span-2">
               <input
                 type="checkbox"
                 checked={marker}
@@ -230,10 +228,10 @@ function AdminNotices() {
 
             {/* PROGRESS */}
             {uploading && (
-              <div className="md:col-span-2">
+              <div className="sm:col-span-2">
                 <div className="w-full bg-gray-200 h-3 rounded">
                   <div
-                    className="bg-blue-600 h-3"
+                    className="bg-blue-600 h-3 rounded"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
@@ -244,12 +242,14 @@ function AdminNotices() {
             )}
 
             {/* BUTTON */}
-            <div className="md:col-span-2 text-right">
+            <div className="sm:col-span-2 text-right">
               <button
                 onClick={addNotice}
                 disabled={uploading}
-                className={`px-6 py-2 text-white rounded ${
-                  uploading ? "bg-gray-400" : "bg-blue-900 hover:bg-blue-800"
+                className={`px-6 py-2 rounded text-white w-full sm:w-auto ${
+                  uploading
+                    ? "bg-gray-400"
+                    : "bg-blue-900 hover:bg-blue-800"
                 }`}
               >
                 {uploading ? "Uploading..." : "Add Notice"}
@@ -261,69 +261,81 @@ function AdminNotices() {
 
         {/* TABLE */}
         <div className="bg-white rounded shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-blue-900 text-white">
-              <tr>
-                <th className="p-3">Date</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>File</th>
-                <th>Marker</th>
-                <th>Action</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              {notices.map((n) => (
-                <tr key={n._id} className="border-t">
-                  <td className="p-3">{n.date}</td>
-                  <td>{n.title}</td>
-                  <td>{n.description || "-"}</td>
+          <div className="md:max-h-none max-h-[320px] overflow-y-auto">
 
-                  <td>
-                    {n.image && (
-                      <img
-                        src={n.image}
-                        className="w-12 h-12 object-cover"
-                        alt=""
-                      />
-                    )}
-                  </td>
+            <div className="overflow-x-auto">
 
-                  <td>
-                    {n.attachment && (
-  <div className="flex gap-3 items-center">
-    
-    {/* Preview Button */}
-    <a
-      href={`https://docs.google.com/gview?url=${encodeURIComponent(n.attachment)}&embedded=true`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-600 underline font-medium"
-    >
-      Preview
-    </a></div>
-)}
+              <table className="w-full min-w-[750px]">
 
-                    
-                  </td>
+                <thead className="bg-blue-900 text-white sticky top-0 z-10">
+                  <tr>
+                    <th className="p-3">Date</th>
+                    <th className="p-3">Title</th>
+                    <th className="p-3">Description</th>
+                    <th className="p-3">Image</th>
+                    <th className="p-3">File</th>
+                    <th className="p-3">Marker</th>
+                    <th className="p-3">Action</th>
+                  </tr>
+                </thead>
 
-                  <td>{n.marker && "Important"}</td>
+                <tbody>
+                  {notices.map((n) => (
+                    <tr key={n._id} className="border-t">
 
-                  <td>
-                    <button
-                      onClick={() => deleteNotice(n._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+                      <td className="p-3">{n.date}</td>
+                      <td className="p-3">{n.title}</td>
+                      <td className="p-3">{n.description || "-"}</td>
 
-          </table>
+                      <td className="p-3">
+                        {n.image && (
+                          <img
+                            src={n.image}
+                            className="w-12 h-12 object-cover"
+                            alt=""
+                          />
+                        )}
+                      </td>
+
+                      <td className="p-3">
+                        {n.attachment && (
+                          <a
+                            href={`https://docs.google.com/gview?url=${encodeURIComponent(
+                              n.attachment
+                            )}&embedded=true`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline"
+                          >
+                            Preview
+                          </a>
+                        )}
+                      </td>
+
+                      <td className="p-3">
+                        {n.marker && "Important"}
+                      </td>
+
+                      <td className="p-3">
+                        <button
+                          onClick={() => deleteNotice(n._id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded"
+                        >
+                          Delete
+                        </button>
+                      </td>
+
+                    </tr>
+                  ))}
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
         </div>
 
       </div>
