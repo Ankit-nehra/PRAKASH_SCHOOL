@@ -65,7 +65,6 @@ function AdminAchievements() {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-
         onUploadProgress: (e) => {
           const percent = Math.round((e.loaded * 100) / e.total);
           setUploadProgress(percent);
@@ -82,7 +81,6 @@ function AdminAchievements() {
       setImagePreview(null);
 
       fetchAchievements();
-
     } catch (err) {
       console.error(err);
       alert("Failed to add achievement");
@@ -117,6 +115,7 @@ function AdminAchievements() {
           Achievement Management
         </h1>
 
+        {/* FORM */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-10">
 
           <h2 className="text-xl font-semibold mb-6">
@@ -126,10 +125,7 @@ function AdminAchievements() {
           <div className="grid md:grid-cols-2 gap-5">
 
             <div>
-              <label className="font-medium">
-                Title *
-              </label>
-
+              <label className="font-medium">Title *</label>
               <input
                 className="border rounded p-2 w-full"
                 value={title}
@@ -138,16 +134,11 @@ function AdminAchievements() {
             </div>
 
             <div>
-              <label className="font-medium">
-                Category
-              </label>
-
+              <label className="font-medium">Category</label>
               <select
                 className="border rounded p-2 w-full"
                 value={category}
-                onChange={(e) =>
-                  setCategory(e.target.value)
-                }
+                onChange={(e) => setCategory(e.target.value)}
               >
                 <option>Academic</option>
                 <option>Sports</option>
@@ -157,82 +148,57 @@ function AdminAchievements() {
             </div>
 
             <div>
-              <label className="font-medium">
-                Student Name
-              </label>
-
+              <label className="font-medium">Student Name</label>
               <input
                 className="border rounded p-2 w-full"
                 value={studentName}
-                onChange={(e) =>
-                  setStudentName(e.target.value)
-                }
+                onChange={(e) => setStudentName(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="font-medium">
-                Class
-              </label>
-
+              <label className="font-medium">Class</label>
               <input
                 className="border rounded p-2 w-full"
                 value={studentClass}
-                onChange={(e) =>
-                  setStudentClass(e.target.value)
-                }
+                onChange={(e) => setStudentClass(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="font-medium">
-                Achievement Date
-              </label>
-
+              <label className="font-medium">Achievement Date</label>
               <input
                 type="date"
                 className="border rounded p-2 w-full"
                 value={achievementDate}
-                onChange={(e) =>
-                  setAchievementDate(e.target.value)
-                }
+                onChange={(e) => setAchievementDate(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="font-medium">
-                Image
-              </label>
+              <label className="font-medium">Image</label>
 
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files[0];
-
                   setImage(file);
 
                   if (file) {
-                    setImagePreview(
-                      URL.createObjectURL(file)
-                    );
+                    setImagePreview(URL.createObjectURL(file));
                   }
                 }}
               />
 
               {image && (
                 <div className="mt-3 p-3 border rounded bg-gray-50">
-
                   <img
                     src={imagePreview}
                     alt=""
                     className="w-24 h-24 rounded object-cover mb-2"
                   />
-
-                  <p className="text-sm">
-                    {image.name}
-                  </p>
-
+                  <p className="text-sm">{image.name}</p>
                   <p className="text-xs text-gray-500">
                     {(image.size / 1024).toFixed(2)} KB
                   </p>
@@ -246,51 +212,35 @@ function AdminAchievements() {
                   >
                     Remove
                   </button>
-
                 </div>
               )}
             </div>
 
             <div className="md:col-span-2">
-
-              <label className="font-medium">
-                Description *
-              </label>
-
+              <label className="font-medium">Description *</label>
               <textarea
                 rows={4}
                 className="border rounded p-2 w-full"
                 value={description}
-                onChange={(e) =>
-                  setDescription(e.target.value)
-                }
+                onChange={(e) => setDescription(e.target.value)}
               />
-
             </div>
 
             {uploading && (
               <div className="md:col-span-2">
-
                 <div className="w-full h-3 bg-gray-200 rounded">
-
                   <div
                     className="bg-blue-700 h-3 rounded"
-                    style={{
-                      width: `${uploadProgress}%`,
-                    }}
+                    style={{ width: `${uploadProgress}%` }}
                   />
-
                 </div>
-
                 <p className="text-sm mt-1">
                   Uploading {uploadProgress}%
                 </p>
-
               </div>
             )}
 
             <div className="md:col-span-2 text-right">
-
               <button
                 disabled={uploading}
                 onClick={addAchievement}
@@ -300,10 +250,78 @@ function AdminAchievements() {
                     : "bg-blue-900 hover:bg-blue-800"
                 }`}
               >
-                {uploading
-                  ? "Uploading..."
-                  : "Add Achievement"}
+                {uploading ? "Uploading..." : "Add Achievement"}
               </button>
+            </div>
+
+          </div>
+        </div>
+
+        {/* TABLE (FIXED RESPONSIVE) */}
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+
+          {/* Mobile safe scroll container */}
+          <div className="md:max-h-none max-h-[320px] overflow-y-auto">
+
+            <div className="overflow-x-auto">
+
+              <table className="w-full min-w-[750px]">
+
+                <thead className="bg-blue-900 text-white sticky top-0 z-10">
+
+                  <tr>
+                    <th className="p-3">Image</th>
+                    <th className="p-3">Title</th>
+                    <th className="p-3">Category</th>
+                    <th className="p-3">Student</th>
+                    <th className="p-3">Class</th>
+                    <th className="p-3">Date</th>
+                    <th className="p-3">Action</th>
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {achievements.map((item) => (
+                    <tr key={item._id} className="border-t">
+
+                      <td className="p-3">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-16 h-16 rounded object-cover"
+                          />
+                        )}
+                      </td>
+
+                      <td className="p-3">{item.title}</td>
+                      <td className="p-3">{item.category}</td>
+                      <td className="p-3">{item.studentName || "-"}</td>
+                      <td className="p-3">{item.studentClass || "-"}</td>
+
+                      <td className="p-3">
+                        {item.achievementDate
+                          ? item.achievementDate.substring(0, 10)
+                          : "-"}
+                      </td>
+
+                      <td className="p-3">
+                        <button
+                          onClick={() => deleteAchievement(item._id)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded whitespace-nowrap"
+                        >
+                          Delete
+                        </button>
+                      </td>
+
+                    </tr>
+                  ))}
+
+                </tbody>
+
+              </table>
 
             </div>
 
@@ -311,80 +329,6 @@ function AdminAchievements() {
 
         </div>
 
-       <div className="bg-white rounded-xl shadow overflow-hidden">
-
-  <div className="overflow-x-auto">
-
-    <div className="max-h-[320px] overflow-y-auto">
-
-      <table className="w-full min-w-[750px]">
-
-        <thead className="bg-blue-900 text-white sticky top-0 z-10">
-
-          <tr>
-            <th className="p-3">Image</th>
-            <th className="p-3">Title</th>
-            <th className="p-3">Category</th>
-            <th className="p-3">Student</th>
-            <th className="p-3">Class</th>
-            <th className="p-3">Date</th>
-            <th className="p-3">Action</th>
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          {achievements.map((item) => (
-
-            <tr key={item._id} className="border-t">
-
-              <td className="p-3">
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt=""
-                    className="w-16 h-16 rounded object-cover"
-                  />
-                )}
-              </td>
-
-              <td className="p-3">{item.title}</td>
-
-              <td className="p-3">{item.category}</td>
-
-              <td className="p-3">{item.studentName || "-"}</td>
-
-              <td className="p-3">{item.studentClass || "-"}</td>
-
-              <td className="p-3">
-                {item.achievementDate
-                  ? item.achievementDate.substring(0, 10)
-                  : "-"}
-              </td>
-
-              <td className="p-3">
-                <button
-                  onClick={() => deleteAchievement(item._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded whitespace-nowrap"
-                >
-                  Delete
-                </button>
-              </td>
-
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</div>
       </div>
     </div>
   );
