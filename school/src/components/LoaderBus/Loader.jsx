@@ -1,7 +1,7 @@
 import styles from "./Loader.module.css";
 import busImage from "../../assets/images/school-bus.jpg";
 
-export default function Loader() {
+export default function Loader() { 
   return (
     <div className={styles.loaderContainer}>
       <div className={styles.busWrapper}>
