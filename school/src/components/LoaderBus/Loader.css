@@ -2,202 +2,195 @@
    Loader Container
 ========================= */
 
-.loader-container{
-    width:100%;
-    height:100vh;
+.loaderContainer {
+  width: 100%;
+  height: 100vh;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    overflow:hidden;
-    background:#f5f8ff;
+  overflow: hidden;
+  background: #f5f8ff;
 }
 
 /* =========================
    Bus Wrapper
 ========================= */
 
-.bus-wrapper{
+.busWrapper {
+  position: absolute;
+  bottom: 280px;
 
-    position:absolute;
-    bottom:280px;
+  width: 240px;
+  height: 120px;
 
-    width:240px;
-    height:120px;
-
-    animation:drive 2s linear forwards;
+  animation: drive 2s linear forwards;
 }
 
 /* =========================
    Loading text on bus
 ========================= */
 
-.bus-text{
-z-index: 10;
-    position:absolute;
-    top:22px;
-    left:40%;
-    transform:translateX(-50%);
+.busText {
+  z-index: 10;
+  position: absolute;
+  top: 22px;
+  left: 40%;
+  transform: translateX(-50%);
 
-    font-size:7px;
-    font-weight:700;
-    color:white;
+  font-size: 7px;
+  font-weight: 700;
+  color: white;
 
-    
-    padding:3px 10px;
-    border-radius:10px;
+  padding: 3px 10px;
+  border-radius: 10px;
 
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* =========================
    Image wrapper (clip bottom 40px)
 ========================= */
 
-.bus-image-wrapper{
+.busImageWrapper {
+  width: 100%;
+  height: calc(100% - 40px);
 
-    width:100%;
-    height:calc(100% - 40px);
-
-    overflow:hidden;
-    position:relative;
+  overflow: hidden;
+  position: relative;
 }
 
-.bus-image{
-    width:100%;
-    display:block;
+.busImage {
+  width: 100%;
+  display: block;
 }
 
 /* =========================
    Wheels
 ========================= */
 
-.wheel{
+.wheel {
+  position: absolute;
+  border: 4px solid green;
+  width: 24px;
+  height: 24px;
 
-    position:absolute;
-    border: 4px solid green;
-    width:24px;
-    height:24px;
+  border-radius: 50%;
 
-    border-radius:50%;
+  background: #222;
+  border: 5px solid #555;
 
-    background:#222;
-    border:5px solid #555;
-
-    animation:spin 0.5s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 
 /* wheel spokes */
+
 .wheel::before,
-.wheel::after{
+.wheel::after {
+  content: "";
+  position: absolute;
 
-    content:"";
-    position:absolute;
+  left: 50%;
+  top: 50%;
 
-    left:50%;
-    top:50%;
+  transform: translate(-50%, -50%);
 
-    transform:translate(-50%,-50%);
-
-    background:#fff;
+  background: #fff;
 }
 
-.wheel::before{
-    width:2px;
-    height:100%;
+.wheel::before {
+  width: 2px;
+  height: 100%;
 }
 
-.wheel::after{
-    width:100%;
-    height:2px;
+.wheel::after {
+  width: 100%;
+  height: 2px;
 }
 
 /* wheel positions */
-.front-wheel{
-    left:57px;
-    bottom:53px;
+
+.frontWheel {
+  left: 57px;
+  bottom: 53px;
 }
 
-.back-wheel{
-    right:15px;
-    bottom:53px;
+.backWheel {
+  right: 15px;
+  bottom: 53px;
 }
 
 /* =========================
    Responsive sizes
 ========================= */
 
-
-
-
-@media (min-width:1024px){
-    .road{
+@media (min-width: 1024px) {
+  .road {
     bottom: -86px;
+  }
+
+  .busWrapper {
+    bottom: 80px;
+  }
+
+  .busText {
+    z-index: 10;
+    position: absolute;
+    top: 78px;
+    left: 40%;
+    transform: translateX(-50%);
+
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+
+    padding: 3px 10px;
+    border-radius: 10px;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .busWrapper {
+    width: 720px;
+    height: 360px;
+  }
+
+  .frontWheel {
+    width: 70px;
+    height: 70px;
+    left: 180px;
+    bottom: 160px;
+    border-width: 10px;
+  }
+
+  .backWheel {
+    width: 70px;
+    height: 70px;
+    right: 40px;
+    bottom: 160px;
+    border-width: 10px;
+  }
 }
-
-.bus-wrapper{
-   bottom :80px;
-}
-    .bus-text{
-z-index: 10;
-    position:absolute;
-    top:78px;
-    left:40%;
-    transform:translateX(-50%);
-
-    font-size:20px;
-    font-weight:700;
-    color:white;
-
-    
-    padding:3px 10px;
-    border-radius:10px;
-
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-    .bus-wrapper{
-        width:720px;
-        height:360px;
-    }
-
-    .front-wheel{
-        
-        width:70px;
-        height:70px;
-        left:180px;
-        bottom:160px;
-        border-width:10px;
-    }
-
-    .back-wheel{
-        width:70px;
-        height:70px;
-        right:40px;
-        bottom:160px;
-        border-width:10px;
-    }
-}
-
 
 /* =========================
    Animations
 ========================= */
 
-@keyframes drive{
-    0%{
-        transform:translateX(-30vw);
-    }
-    100%{
-        transform:translateX(30vw);
-    }
+@keyframes drive {
+  0% {
+    transform: translateX(-30vw);
+  }
+  100% {
+    transform: translateX(30vw);
+  }
 }
 
-@keyframes spin{
-    from{
-        transform:rotate(0deg);
-    }
-    to{
-        transform:rotate(360deg);
-    }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
