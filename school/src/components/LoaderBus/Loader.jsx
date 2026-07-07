@@ -1,31 +1,26 @@
-import "./Loader.css";
+import styles from "./Loader.module.css";
 import busImage from "../../assets/images/school-bus.jpg";
 
 export default function Loader() {
   return (
-    <div className="loader-container">
-
-      <div className="bus-wrapper">
-
+    <div className={styles.loaderContainer}>
+      <div className={styles.busWrapper}>
         {/* Loading text on bus */}
-        <div className="bus-text">
+        <div className={styles.busText}>
           Prakash Public School
         </div>
 
-        <div className="bus-image-wrapper">
+        <div className={styles.busImageWrapper}>
           <img
             src={busImage}
             alt="School Bus"
-            className="bus-image"
+            className={styles.busImage}
           />
         </div>
 
-        <div className="wheel front-wheel"></div>
-        <div className="wheel back-wheel"></div>
-        
-
+        <div className={`${styles.wheel} ${styles.frontWheel}`}></div>
+        <div className={`${styles.wheel} ${styles.backWheel}`}></div>
       </div>
-
     </div>
   );
 }
